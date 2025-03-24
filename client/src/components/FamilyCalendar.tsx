@@ -24,7 +24,7 @@ export default function FamilyCalendar({ onSelectPerson }: FamilyCalendarProps) 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1; // JavaScript months are 0-indexed
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<PersonCalendarData[]>({
     queryKey: [`/api/calendar/all/${year}/${month}`],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -88,7 +88,7 @@ export default function FamilyCalendar({ onSelectPerson }: FamilyCalendarProps) 
     );
   }
 
-  const peopleCalendarData: PersonCalendarData[] = data;
+  const peopleCalendarData = data;
 
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">

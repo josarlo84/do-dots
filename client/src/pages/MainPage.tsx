@@ -1,6 +1,7 @@
 import { useAppContext } from "@/contexts/AppContext";
 import { useLocation } from "wouter";
 import PersonCard from "@/components/PersonCard";
+import FamilyCalendar from "@/components/FamilyCalendar";
 import { Button } from "@/components/ui/button";
 
 export default function MainPage() {
@@ -32,8 +33,14 @@ export default function MainPage() {
         </div>
         <p className="text-gray-600 mt-2">Select a family member to view their dashboard.</p>
       </header>
+      
+      {/* Family Calendar */}
+      {people.length > 0 && (
+        <FamilyCalendar onSelectPerson={handlePersonSelect} />
+      )}
 
       {/* Person cards grid */}
+      <h2 className="text-xl font-medium text-gray-800 mb-4">Family Members</h2>
       {isPeopleLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
