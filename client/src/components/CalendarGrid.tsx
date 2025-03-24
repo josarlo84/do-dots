@@ -32,7 +32,7 @@ export default function CalendarGrid({ days }: CalendarGridProps) {
             )}
           >
             <div className="text-sm font-medium mb-1 text-gray-600">
-              {day.date.getDate()}
+              {day.date instanceof Date ? day.date.getDate() : new Date(day.date).getDate()}
             </div>
             
             {/* If Level 2 achieved on this day */}
