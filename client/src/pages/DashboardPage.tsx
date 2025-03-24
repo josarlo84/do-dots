@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const personalTaskMutation = useMutation({
     mutationFn: async ({ id, action, title }: { id: number; action: "delete" | "edit"; title?: string }) => {
       if (action === "delete") {
-        return apiRequest('DELETE', `/api/personal-tasks/${id}`, undefined);
+        return apiRequest('DELETE', `/api/personal-tasks/${id}`);
       } else if (action === "edit" && title) {
         return apiRequest('PATCH', `/api/personal-tasks/${id}`, { title });
       }
