@@ -118,8 +118,7 @@ export class MemStorage implements IStorage {
         personId: id,
         taskId: task.id,
         taskType: 'global',
-        completed: false,
-        date: new Date()
+        completed: false
       });
     }
 
@@ -183,8 +182,7 @@ export class MemStorage implements IStorage {
         personId: person.id,
         taskId: id,
         taskType: 'global',
-        completed: false,
-        date: new Date()
+        completed: false
       });
     }
 
@@ -255,8 +253,7 @@ export class MemStorage implements IStorage {
       personId: task.personId,
       taskId: id,
       taskType: 'personal',
-      completed: false,
-      date: new Date()
+      completed: false
     });
 
     return newTask;

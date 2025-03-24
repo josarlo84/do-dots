@@ -53,8 +53,6 @@ export const insertTaskCompletionSchema = createInsertSchema(taskCompletions).pi
   taskId: true,
   taskType: true,
   completed: true,
-}).extend({
-  date: z.date().optional()
 });
 
 // Calendar Record schema

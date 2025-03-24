@@ -29,8 +29,7 @@ export default function DashboardPage() {
         personId,
         taskId,
         taskType,
-        completed,
-        date: new Date()
+        completed
       });
     },
     onSuccess: () => {
@@ -40,7 +39,8 @@ export default function DashboardPage() {
         description: "Task completion status has been updated.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Task completion error:", error);
       toast({
         title: "Error",
         description: "Failed to update task status.",
