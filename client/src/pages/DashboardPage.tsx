@@ -77,6 +77,26 @@ export default function DashboardPage() {
       });
     }
   });
+  
+  const globalTaskMutation = useMutation({
+    mutationFn: async ({ id, title }: { id: number; title: string }) => {
+      return apiRequest('PATCH', `/api/global-tasks/${id}`, { title });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/people/${personId}`] });
+      toast({
+        title: "Task updated",
+        description: "Global task title has been updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update global task title.",
+        variant: "destructive",
+      });
+    }
+  });
 
   const themeMutation = useMutation({
     mutationFn: async (theme: string) => {
@@ -119,6 +139,8 @@ export default function DashboardPage() {
   const handleEditTask = (task: Task, newTitle: string) => {
     if (task.type === 'personal') {
       personalTaskMutation.mutate({ id: task.id, action: "edit", title: newTitle });
+    } else if (task.type === 'global') {
+      globalTaskMutation.mutate({ id: task.id, title: newTitle });
     }
   };
 
@@ -209,8 +231,9 @@ export default function DashboardPage() {
               <TaskList 
                 tasks={person.globalTasks} 
                 onToggle={handleToggleTask} 
-                showActions={false}
+                showActions={true}
                 onDelete={() => {}}
+                onEdit={handleEditTask}
               />
             </div>
           )}

@@ -92,7 +92,7 @@ export default function TaskItem({ task, onToggle, onDelete, showActions, onEdit
         )}
       </div>
 
-      {showActions && task.type === 'personal' && (
+      {showActions && (
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           {isEditing ? (
             <>
@@ -123,37 +123,39 @@ export default function TaskItem({ task, onToggle, onDelete, showActions, onEdit
               >
                 <Pencil className="h-5 w-5" />
               </button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <button 
-                    className="text-gray-400 hover:text-red-500 ml-2"
-                    onClick={(e) => e.stopPropagation()}
-                    title="Delete"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will permanently delete the task. This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction 
-                      className="bg-red-500 hover:bg-red-600"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete();
-                      }}
+              {task.type === 'personal' && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button 
+                      className="text-gray-400 hover:text-red-500 ml-2"
+                      onClick={(e) => e.stopPropagation()}
+                      title="Delete"
                     >
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete the task. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction 
+                        className="bg-red-500 hover:bg-red-600"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete();
+                        }}
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </>
           )}
         </div>
