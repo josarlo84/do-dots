@@ -50,23 +50,29 @@ export default function DashboardPage() {
   });
 
   const personalTaskMutation = useMutation({
-    mutationFn: async ({ id, action }: { id: number; action: "delete" }) => {
+    mutationFn: async ({ id, action, title }: { id: number; action: "delete" | "edit"; title?: string }) => {
       if (action === "delete") {
         return apiRequest('DELETE', `/api/personal-tasks/${id}`, undefined);
+      } else if (action === "edit" && title) {
+        return apiRequest('PATCH', `/api/personal-tasks/${id}`, { title });
       }
-      throw new Error("Unsupported action");
+      throw new Error("Unsupported action or missing title");
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: [`/api/people/${personId}`] });
       toast({
-        title: "Task deleted",
-        description: "Personal task has been removed.",
+        title: variables.action === "delete" ? "Task deleted" : "Task updated",
+        description: variables.action === "delete" 
+          ? "Personal task has been removed." 
+          : "Task title has been updated.",
       });
     },
-    onError: () => {
+    onError: (_, variables) => {
       toast({
         title: "Error",
-        description: "Failed to delete task.",
+        description: variables.action === "delete" 
+          ? "Failed to delete task." 
+          : "Failed to update task title.",
         variant: "destructive",
       });
     }
@@ -108,6 +114,12 @@ export default function DashboardPage() {
 
   const handleThemeChange = (theme: string) => {
     themeMutation.mutate(theme);
+  };
+  
+  const handleEditTask = (task: Task, newTitle: string) => {
+    if (task.type === 'personal') {
+      personalTaskMutation.mutate({ id: task.id, action: "edit", title: newTitle });
+    }
   };
 
   if (isLoading) {
@@ -212,6 +224,7 @@ export default function DashboardPage() {
                 onToggle={handleToggleTask}
                 showActions={true}
                 onDelete={handleDeleteTask}
+                onEdit={handleEditTask}
               />
             </div>
           )}
