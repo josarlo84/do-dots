@@ -34,11 +34,6 @@ export default function MainPage() {
         <p className="text-gray-600 mt-2">Select a family member to view their dashboard.</p>
       </header>
       
-      {/* Family Calendar */}
-      {people.length > 0 && (
-        <FamilyCalendar onSelectPerson={handlePersonSelect} />
-      )}
-
       {/* Person cards grid */}
       <h2 className="text-xl font-medium text-gray-800 mb-4">Family Members</h2>
       {isPeopleLoading ? (
@@ -63,6 +58,13 @@ export default function MainPage() {
               onClick={() => handlePersonSelect(person.id)} 
             />
           ))}
+        </div>
+      )}
+      
+      {/* Family Calendar */}
+      {people.length > 0 && (
+        <div className="mt-8">
+          <FamilyCalendar onSelectPerson={handlePersonSelect} />
         </div>
       )}
     </div>
