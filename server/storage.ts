@@ -45,6 +45,7 @@ export interface IStorage {
   getPersonWithTasks(id: number): Promise<PersonWithTasks | undefined>;
   getPeopleWithTasks(): Promise<PersonWithTasks[]>;
   getCalendarDays(personId: number, year: number, month: number): Promise<CalendarDay[]>;
+  getAllPeopleCalendarDays(year: number, month: number): Promise<{ personId: number, name: string, days: CalendarDay[] }[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -546,6 +547,22 @@ export class MemStorage implements IStorage {
     }
     
     return days;
+  }
+  
+  async getAllPeopleCalendarDays(year: number, month: number): Promise<{ personId: number, name: string, days: CalendarDay[] }[]> {
+    const people = await this.getPeople();
+    const result = [];
+    
+    for (const person of people) {
+      const days = await this.getCalendarDays(person.id, year, month);
+      result.push({
+        personId: person.id,
+        name: person.name,
+        days
+      });
+    }
+    
+    return result;
   }
 }
 

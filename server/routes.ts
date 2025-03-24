@@ -13,6 +13,11 @@ import {
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = express.Router();
 
+  // Health check endpoint
+  apiRouter.get("/healthcheck", (_, res) => {
+    res.status(200).send("OK");
+  });
+
   // People endpoints
   apiRouter.get("/people", async (req, res) => {
     const people = await storage.getPeopleWithTasks();
@@ -230,6 +235,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const days = await storage.getCalendarDays(personId, year, month);
       res.json(days);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch calendar data" });
+    }
+  });
+  
+  apiRouter.get("/calendar/all/:year/:month", async (req, res) => {
+    const year = parseInt(req.params.year);
+    const month = parseInt(req.params.month);
+    
+    if (isNaN(year) || isNaN(month)) {
+      return res.status(400).json({ message: "Invalid parameters format" });
+    }
+
+    try {
+      const peopleCalendarData = await storage.getAllPeopleCalendarDays(year, month);
+      res.json(peopleCalendarData);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch calendar data" });
     }
