@@ -173,27 +173,10 @@ export default function DashboardPage() {
         
       {/* Task Lists */}
       <div className="container mx-auto px-4 py-6 flex-grow">
-        {/* Global Tasks Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Global Tasks</h3>
-          {person.globalTasks.length === 0 ? (
-            <div className="text-center py-6 border rounded-lg bg-white bg-opacity-70">
-              <p className="text-gray-500">No global tasks assigned yet.</p>
-            </div>
-          ) : (
-            <TaskList 
-              tasks={person.globalTasks} 
-              onToggle={handleToggleTask} 
-              showActions={false}
-              onDelete={() => {}}
-            />
-          )}
-        </div>
-          
-        {/* Individual Tasks Section */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Personal Tasks</h3>
+        {/* Combined Tasks Section */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-medium text-gray-800">All Tasks</h3>
             <Button 
               variant="default" 
               size="sm"
@@ -206,18 +189,38 @@ export default function DashboardPage() {
               Add Task
             </Button>
           </div>
-            
-          {person.personalTasks.length === 0 ? (
-            <div className="text-center py-8 border rounded-lg bg-white bg-opacity-70">
-              <p className="text-gray-500">No personal tasks yet. Add one to get started!</p>
+          
+          {/* Global Tasks Section */}
+          {person.globalTasks.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-gray-500 mb-3">Global Tasks</h4>
+              <TaskList 
+                tasks={person.globalTasks} 
+                onToggle={handleToggleTask} 
+                showActions={false}
+                onDelete={() => {}}
+              />
             </div>
-          ) : (
-            <TaskList 
-              tasks={person.personalTasks} 
-              onToggle={handleToggleTask}
-              showActions={true}
-              onDelete={handleDeleteTask}
-            />
+          )}
+            
+          {/* Personal Tasks Section */}
+          {person.personalTasks.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-3">Personal Tasks</h4>
+              <TaskList 
+                tasks={person.personalTasks} 
+                onToggle={handleToggleTask}
+                showActions={true}
+                onDelete={handleDeleteTask}
+              />
+            </div>
+          )}
+          
+          {/* Empty state */}
+          {person.globalTasks.length === 0 && person.personalTasks.length === 0 && (
+            <div className="text-center py-10 border rounded-lg bg-gray-50">
+              <p className="text-gray-500">No tasks available. Add a personal task to get started!</p>
+            </div>
           )}
         </div>
       </div>

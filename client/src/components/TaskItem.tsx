@@ -1,6 +1,8 @@
 import { Task } from "@shared/schema";
 import { cn } from "@/lib/utils";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2, Check, X } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -18,13 +20,32 @@ interface TaskItemProps {
   onToggle: () => void;
   onDelete: () => void;
   showActions: boolean;
+  onEdit?: (newTitle: string) => void;
 }
 
-export default function TaskItem({ task, onToggle, onDelete, showActions }: TaskItemProps) {
+export default function TaskItem({ task, onToggle, onDelete, showActions, onEdit }: TaskItemProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(task.title);
+  
+  const handleEdit = () => {
+    if (onEdit && editedTitle.trim() !== '') {
+      onEdit(editedTitle);
+      setIsEditing(false);
+    }
+  };
+  
+  const handleCancel = () => {
+    setEditedTitle(task.title);
+    setIsEditing(false);
+  };
+  
   return (
     <div 
-      className="flex items-center p-3 border rounded-lg bg-white hover:bg-gray-50 cursor-pointer transition"
-      onClick={onToggle}
+      className={cn(
+        "flex items-center p-3 border rounded-lg bg-white hover:bg-gray-50 transition",
+        !isEditing && "cursor-pointer"
+      )}
+      onClick={!isEditing ? onToggle : undefined}
     >
       <div className="mr-3">
         <div 
@@ -49,49 +70,92 @@ export default function TaskItem({ task, onToggle, onDelete, showActions }: Task
           )}
         </div>
       </div>
+      
       <div className="flex-grow">
-        <p 
-          className={cn(
-            "text-gray-800",
-            task.completed ? "line-through text-gray-500" : ""
-          )}
-        >
-          {task.title}
-        </p>
+        {isEditing ? (
+          <Input
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            autoFocus
+            className="py-0 h-7"
+          />
+        ) : (
+          <p 
+            className={cn(
+              "text-gray-800",
+              task.completed ? "line-through text-gray-500" : ""
+            )}
+          >
+            {task.title}
+          </p>
+        )}
       </div>
 
       {showActions && task.type === 'personal' && (
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
+          {isEditing ? (
+            <>
               <button 
-                className="text-gray-400 hover:text-red-500 ml-2"
-                onClick={(e) => e.stopPropagation()}
+                className="text-green-500 hover:text-green-600 ml-2"
+                onClick={handleEdit}
+                title="Save"
               >
-                <Trash2 className="h-5 w-5" />
+                <Check className="h-5 w-5" />
               </button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permanently delete the task. This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction 
-                  className="bg-red-500 hover:bg-red-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete();
-                  }}
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+              <button 
+                className="text-gray-400 hover:text-gray-500 ml-2"
+                onClick={handleCancel}
+                title="Cancel"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                className="text-gray-400 hover:text-blue-500 ml-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                title="Edit"
+              >
+                <Pencil className="h-5 w-5" />
+              </button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button 
+                    className="text-gray-400 hover:text-red-500 ml-2"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Delete"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete the task. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                      className="bg-red-500 hover:bg-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                      }}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          )}
         </div>
       )}
     </div>

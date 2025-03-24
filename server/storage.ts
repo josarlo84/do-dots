@@ -329,17 +329,24 @@ export class MemStorage implements IStorage {
       this.taskCompletions.set(key, updated);
       
       // Update calendar record
-      await this.updateCalendarForPerson(data.personId, new Date(data.date));
+      await this.updateCalendarForPerson(data.personId, new Date());
       
       return updated;
     }
     
     const id = this.currentTaskCompletionId++;
-    const newCompletion: TaskCompletion = { id, ...data };
+    const newCompletion: TaskCompletion = { 
+      id, 
+      personId: data.personId,
+      taskId: data.taskId,
+      taskType: data.taskType,
+      completed: data.completed ?? false,
+      date: new Date() 
+    };
     this.taskCompletions.set(key, newCompletion);
     
     // Update calendar record
-    await this.updateCalendarForPerson(data.personId, new Date(data.date));
+    await this.updateCalendarForPerson(data.personId, new Date());
     
     return newCompletion;
   }
