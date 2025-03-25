@@ -82,12 +82,21 @@ export class MemStorage implements IStorage {
       "Make your bed", 
       "Brush teeth", 
       "Clean room", 
-      "Read for 30 minutes"
+      "Read for 30 minutes",
+      "Household chore",
+      "Excercise",
+      "Practice piano",
+      "Put clothes away"
     ];
     
     for (const title of globalTaskTitles) {
       this.createGlobalTask({ title });
     }
+
+
+    this.createPerson({ name: "Isaac", role: "Son" });
+    this.createPerson({ name: "Ellie", role: "Daughter" });
+    this.createPerson({ name: "Brayden", role: "Son" });
   }
 
   private getTaskCompletionKey(personId: number, taskId: number, taskType: string): string {
