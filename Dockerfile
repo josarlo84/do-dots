@@ -17,5 +17,7 @@ RUN npm run build
 # Expose the port that the application will run on
 EXPOSE 5000
 
+RUN chmod +x /app/entrypoint.sh
+
 # Command to run the application
-CMD ["npm", "start"]
+ENTRYPOINT ["/app/entrypoint.sh"]
