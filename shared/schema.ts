@@ -1,5 +1,6 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, date, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { sql } from 'drizzle-orm';
 import { z } from "zod";
 
 // Person schema
@@ -45,8 +46,8 @@ export const taskCompletions = pgTable("task_completions", {
   taskId: integer("task_id").notNull(),
   taskType: text("task_type").notNull(), // 'global' or 'personal'
   completed: boolean("completed").default(false).notNull(),
-  date: timestamp("date").defaultNow().notNull(),
-});
+  date: date("date").notNull().default(sql`CURRENT_DATE`),
+}, (t) => [ unique().on(t.taskId, t.personId, t.taskType, t.date) ]);
 
 export const insertTaskCompletionSchema = createInsertSchema(taskCompletions).pick({
   personId: true,

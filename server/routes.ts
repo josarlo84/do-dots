@@ -103,6 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid task data", errors: error.errors });
       }
+      console.log(`ERROR: ${JSON.stringify(error)}`);
       res.status(500).json({ message: "Failed to create global task" });
     }
   });
